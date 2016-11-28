@@ -1,0 +1,28 @@
+% genpath '/lib'
+pts1_n = pts1%/1920;
+pts2_n = pts2%/1920;
+
+one_s = repmat(1,[1 size(pts1,2)]);
+pts1_h = [pts1_n;one_s];
+pts2_h = [pts2_n;one_s];
+
+A=[];
+for i = 1:size(pts1,2)
+    row1 = [pts2_h(1,i).*pts1_h(:,i)' pts2_h(2,i).*pts1_h(:,i)' pts2_h(3,i).*pts1_h(:,i)'];
+    A=[A ;row1];
+      
+end
+A=A./1920;
+[V,D]=eig(A'*A);
+e_values=D*ones(size(D,1),1);
+[I]=find(e_values==min(e_values));
+Fvec = V(:,I);
+F=reshape(Fvec,3,3)';
+
+% [u,s,v]=svd(F)
+% s(3,3)=0
+% F2=u*s*v
+
+i1=imread('data/i1.jpg');
+i2=imread('data/i2.jpg');
+displayEpipolarF(i1,i2,F)
